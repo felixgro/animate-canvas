@@ -1,0 +1,15 @@
+{
+	"name": "canvas-animator",
+	"version": "0.0.1",
+	"main": "lib/index.js",
+	"author": "Felix Grohs",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc",
+		"serve": "parcel demo/index.html"
+	},
+	"devDependencies": {
+		"parcel": "^2.0.0-beta.2",
+		"typescript": "^4.2.4"
+	}
+}
