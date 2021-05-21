@@ -5,8 +5,8 @@ export type FrameCallback = (ctx: CanvasRenderingContext2D, delta: number) => vo
 export default class Animator {
    public canvas: HTMLCanvasElement;
    public ctx: CanvasRenderingContext2D;
+   public running = false;
 
-   private running = false;
    private frameId = 0;
    private lastFrame = 0;
    private delta = 0;
@@ -26,23 +26,29 @@ export default class Animator {
       return this;
    }
 
-   public start() {
-      if (this.running) return;
+   public start(): Animator {
+      if (this.running) return this;
       this.running = true;
-
+      this.lastFrame = performance.now();
 
       this.requestNewFrame();
+
+      return this;
    }
 
-   public stop() {
-      if (!this.running) return;
-      this.running = false;
-      this.frameId = 0;
-      this.lastFrame = 0;
-      this.delta = 0;
-      this.fps = 0;
+   public stop(): Animator {
+      if (!this.running) return this;
 
       cancelAnimationFrame(this.frameId);
+
+      this.running = false;
+      this.frameId = 0;
+
+      return this;
+   }
+
+   public toggle(): Animator {
+      return this.running ? this.stop() : this.start();
    }
 
    public resizeCanvas() {
