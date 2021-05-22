@@ -1,15 +1,29 @@
 {
 	"name": "@felixgro/animate-canvas",
-	"version": "0.1.0",
+	"description": "A minimal library for frame-independent Canvas2D animations.",
+	"version": "1.0.0",
 	"main": "lib/index.js",
-	"author": "Felix Grohs",
+	"types": "lib/index.d.ts",
+	"keywords": [
+		"canvas2d",
+		"animation"
+	],
+	"homepage": "https://github.com/felixgro/animate-canvas",
 	"license": "MIT",
+	"author": {
+		"name": "Felix Grohs",
+		"email": "me@felixgrohs.dev",
+		"url": "https://felixgrohs.dev"
+	},
 	"scripts": {
-		"build": "tsc",
-		"serve": "parcel demo/index.html"
+		"build": "tsc && rollup --config && rm -rf types"
 	},
 	"devDependencies": {
-		"parcel": "^2.0.0-beta.2",
+		"@rollup/plugin-typescript": "^8.2.1",
+		"rollup": "^2.48.0",
+		"rollup-plugin-dts": "^3.0.2",
+		"rollup-plugin-ts": "^1.3.12",
+		"tslib": "^2.2.0",
 		"typescript": "^4.2.4"
 	}
 }
