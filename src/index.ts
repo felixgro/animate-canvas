@@ -1,7 +1,5 @@
-import Animator, { FrameCallback } from './Animator';
+import Animator from './Animator';
 
-export const animate = (canvas: HTMLCanvasElement | string, eachFrame: FrameCallback) => {
-   return new Animator(canvas).eachFrame(eachFrame);
-};
+export const animate = (canvas: HTMLCanvasElement | string): Animator => new Animator(canvas);
 
 export default Animator;

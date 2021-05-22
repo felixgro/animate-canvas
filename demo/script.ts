@@ -1,16 +1,13 @@
-import { animate } from '../src/index';
+import { animate } from '../lib/index';
 
-let x = 0;
-let speed = 100;
+let x = 0, speed = 250;
 
-const animator = animate('#canvas', (ctx, delta) => {
-   if (x >= window.innerWidth || x < 0) speed *= -1;
+animate('#canvas').eachFrame((ctx, delta) => {
+    if (x > window.innerWidth - 50 || x < 0) speed *= -1;
 
-   ctx.beginPath();
-   ctx.ellipse(x += speed * delta, 50, 20, 20, 0, 0, Math.PI * 2);
-   ctx.fill();
+    ctx.beginPath();
+    ctx.rect(x, 100, 50, 50);
+    ctx.fill();
+
+    x += speed * delta;
 }).start();
-
-document.onkeydown = e => {
-   animator.toggle();
-}
