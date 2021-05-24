@@ -1,6 +1,8 @@
 /types
 /src
 /demo
+/dist
+/.parcel-cache
 
 rollup.config.js
 tsconfig.json

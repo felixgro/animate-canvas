@@ -11,6 +11,7 @@ export default class Animator {
 	private fps = 0;
 
 	private _showFps = false;
+	private _fpsColor = '#000';
 	private _eachFrame: FrameCallback = () => { };
 
 	constructor(canvas: HTMLCanvasElement | string) {
@@ -58,8 +59,9 @@ export default class Animator {
 		return this;
 	}
 
-	public showFps(): Animator {
+	public showFps(color?: string): Animator {
 		this._showFps = true;
+		if (color) this._fpsColor = color;
 		return this;
 	}
 
@@ -76,8 +78,12 @@ export default class Animator {
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 		this._eachFrame(this.ctx, this.delta);
 
-		if (this._showFps)
+		if (this._showFps) {
+			const oldColor = this.ctx.fillStyle;
+			this.ctx.fillStyle = this._fpsColor;
 			this.ctx.fillText(`${Math.round(this.fps)}`, 10, 20);
+			this.ctx.fillStyle = oldColor;
+		}
 
 		this.lastFrame = ts;
 	}
