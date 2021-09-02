@@ -11,6 +11,7 @@ export default class Animator {
 	private fps = 0;
 
 	private _showFps = false;
+	private _autoStopped = false;
 	private _fpsColor = '#000';
 	private _eachFrame: FrameCallback = () => { };
 
@@ -26,8 +27,9 @@ export default class Animator {
 
 		this.canvas = canvas;
 		this.ctx = this.canvas.getContext('2d')!;
-
 		this.resizeCanvas();
+
+		document.addEventListener('visibilitychange', this.autoStop.bind(this));
 	}
 
 	public start(): Animator {
@@ -90,5 +92,12 @@ export default class Animator {
 
 	private requestNewFrame() {
 		this.frameId = requestAnimationFrame(this.frame.bind(this));
+	}
+
+	private autoStop() {
+		if (!this.running && !this._autoStopped) return;
+
+		this._autoStopped = this.running;
+		this.toggle();
 	}
 }

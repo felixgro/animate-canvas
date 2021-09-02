@@ -2,4 +2,5 @@
 /lib
 /types
 /dist
+/demo/dist
 /.parcel-cache
