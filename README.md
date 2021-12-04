@@ -1,49 +1,41 @@
 # Animate-Canvas
 
-A minimal library for frame-independent Canvas2D animations.
+A minimal library for frame-independent Canvas2D or Webgl animations.
 
 It's as simple as that:
 ```javascript
-animate('#canvas').eachFrame((ctx, delta) => {
+animateCanvas(canvas, '2d', (ctx, delta) => {
 	// animation logic..
 }).start();
 ```
 
-## Getting Started
-Install using Yarn or NPM:
-```bash
-yarn add @felixgro/animate-canvas
+## Features
+- Works with WebGL as well as 2d canvas
+- Visualize FPS-Rate
+- Frame-independent animations with delta
 
+## Getting Started
+Install using NPM or Yarn:
+```bash
 npm install @felixgro/animate-canvas
 ```
 
 Start animating:
 ```typescript
-import { animate } from '@felixgro/animate-canvas';
+import { animateCanvas } from '@felixgro/animate-canvas';
 
 // Pass a valid css selector or the canvas element itself..
-const animation = animate(canvasElement);
-
-// Define a callback for each frame..
-animation.eachFrame((ctx, delta) => {});
+const animation = animateCanvas(canvasElement, '2d' | 'webgl', frameHandler);
 
 // Change playstate..
 animation.start();
 animation.stop();
-animation.toggle();
 
-// Render current framerate in canvas..
-animation.showFps();
-
-// Access canvas element & it's rendering context..
-animation.canvas
+// Access active rendering context
 animation.ctx
 ```
 
-You may chain methods as well:
+You may chain playstate methods:
 ```typescript
-const animation = animate('#canvas')
-    .eachFrame(doSomething)
-    .showFps()
-    .start();
+const animation = animateCanvas(...).start();
 ```
