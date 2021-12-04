@@ -1,6 +1,6 @@
 {
 	"name": "@felixgro/animate-canvas",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"license": "MIT",
 	"description": "A minimal library for frame-independent Canvas2D or WebGL animations.",
 	"homepage": "https://github.com/felixgro/animate-canvas",
