@@ -1,5 +1,4 @@
 import FPSGraph from './FpsGraph';
-import FpsGraph from './FpsGraph';
 
 export type FrameHandler<CTX> = (ctx: CTX, delta: number) => void;
 

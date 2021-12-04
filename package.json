@@ -1,20 +1,21 @@
 {
 	"name": "@felixgro/animate-canvas",
-	"description": "A minimal library for frame-independent Canvas2D animations.",
 	"version": "2.0.2",
-	"main": "lib/index.js",
-	"types": "lib/index.d.ts",
-	"keywords": [
-		"canvas2d",
-		"animation"
-	],
-	"homepage": "https://github.com/felixgro/animate-canvas",
 	"license": "MIT",
+	"description": "A minimal library for frame-independent Canvas2D or WebGL animations.",
+	"homepage": "https://github.com/felixgro/animate-canvas",
 	"author": {
 		"name": "Felix Grohs",
 		"email": "me@felixgrohs.dev",
 		"url": "https://felixgrohs.dev"
 	},
+	"keywords": [
+		"canvas2d",
+		"webgl",
+		"animation"
+	],
+	"main": "lib/index.js",
+	"types": "lib/index.d.ts",
 	"scripts": {
 		"demo": "parcel demo/index.html",
 		"build": "tsc && rollup --config && rm -rf types"
