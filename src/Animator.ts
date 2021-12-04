@@ -1,103 +1,101 @@
-export type FrameCallback = (ctx: CanvasRenderingContext2D, delta: number) => void;
+import FPSGraph from './FpsGraph';
+import FpsGraph from './FpsGraph';
 
-export default class Animator {
-	public canvas: HTMLCanvasElement;
-	public ctx: CanvasRenderingContext2D;
-	public running = false;
+export type FrameHandler<CTX> = (ctx: CTX, delta: number) => void;
 
-	private frameId = 0;
-	private lastFrame = 0;
-	private delta = 0;
-	private fps = 0;
+export interface IAnimator<CTX> {
+	ctx: CTX;
+	clearFrame(): void;
+}
 
-	private _showFps = false;
-	private _autoStopped = false;
-	private _fpsColor = '#000';
-	private _eachFrame: FrameCallback = () => { };
+export interface IFrame<CTX> {
+	id: number;
+	prevRender: number;
+	prevFPSRender: number
+	deltaRecord: number[];
+	handler: FrameHandler<CTX>;
+}
 
-	constructor(canvas: HTMLCanvasElement | string) {
-		if (typeof canvas === 'string') {
-			const element = document.querySelector<HTMLCanvasElement>(canvas);
+export default abstract class Animator<CTX> implements IAnimator<CTX> {
+	public ctx: CTX;
 
-			if (!element)
-				throw new Error(`Cannot find canvas with selector '${canvas}'`);
+	protected _state: 'running' | 'paused' | 'stopped' = 'stopped';
 
-			canvas = element;
+	protected _config = {
+		showFps: true,
+		fpsColor: '#000',
+		throttleFrame: 30,
+		clearFrame: true
+	}
+
+	protected _frame: IFrame<CTX> = {
+		id: 0,
+		prevRender: 0,
+		prevFPSRender: 0,
+		deltaRecord: [],
+		handler: () => { },
+	}
+
+	private _fps: FPSGraph | null = null;
+
+	abstract clearFrame(): void;
+
+	constructor(ctx: CTX, handler: FrameHandler<CTX>) {
+		this._frame.handler = handler;
+		this.ctx = ctx;
+
+		if (this._config.showFps) {
+			this._fps = new FPSGraph((this.ctx as any).canvas);
 		}
 
-		this.canvas = canvas;
-		this.ctx = this.canvas.getContext('2d')!;
-		this.resizeCanvas();
+		window.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'hidden' && this._state === 'running') {
+				this.stop();
+				this._state = 'paused';
+			}
 
-		document.addEventListener('visibilitychange', this.autoStop.bind(this));
+			if (document.visibilityState === 'visible' && this._state === 'paused') {
+				this.start();
+			}
+		});
 	}
 
-	public start(): Animator {
-		if (this.running) return this;
-		this.running = true;
-		this.lastFrame = performance.now();
+	public start(): this {
+		if (this._state === 'running') return this;
+		this._state = 'running';
 
-		this.requestNewFrame();
-
+		this._frame.prevRender = performance.now();
+		if (this._config.showFps) this._frame.prevFPSRender = performance.now();
+		this.requestAnimationFrame();
 		return this;
 	}
 
-	public stop(): Animator {
-		if (!this.running) return this;
+	public stop(): this {
+		if (this._state !== 'running') return this;
+		this._state = 'stopped';
 
-		cancelAnimationFrame(this.frameId);
-
-		this.running = false;
-		this.frameId = 0;
+		cancelAnimationFrame(this._frame.id);
 		return this;
-	}
-
-	public toggle(): Animator {
-		return this.running ? this.stop() : this.start();
-	}
-
-	public eachFrame(callback: FrameCallback): Animator {
-		this._eachFrame = callback;
-		return this;
-	}
-
-	public showFps(color?: string): Animator {
-		this._showFps = true;
-		if (color) this._fpsColor = color;
-		return this;
-	}
-
-	public resizeCanvas() {
-		this.canvas.width = this.canvas.clientWidth;
-		this.canvas.height = this.canvas.clientHeight;
 	}
 
 	private frame(ts: DOMHighResTimeStamp) {
-		this.fps = 1000 / (ts - this.lastFrame);
-		this.delta = 1 / this.fps;
+		const delta = ts - this._frame.prevRender;
+		this._frame.deltaRecord.push(delta);
+		this._frame.prevRender = ts;
 
-		this.requestNewFrame();
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-		this._eachFrame(this.ctx, this.delta);
+		if (this._config.clearFrame) this.clearFrame();
+		this._frame.handler(this.ctx, delta);
+		this.requestAnimationFrame();
 
-		if (this._showFps) {
-			const oldColor = this.ctx.fillStyle;
-			this.ctx.fillStyle = this._fpsColor;
-			this.ctx.fillText(`${Math.round(this.fps)}`, 10, 20);
-			this.ctx.fillStyle = oldColor;
+		if (this._fps && (ts - this._frame.prevFPSRender > 800)) {
+			this._frame.prevFPSRender = ts;
+			const avgDelta = this._frame.deltaRecord.reduce((a, b) => a + b, 0) / this._frame.deltaRecord.length;
+			this._frame.deltaRecord = [];
+			this._fps.render(Math.round(1000 / avgDelta));
 		}
-
-		this.lastFrame = ts;
 	}
 
-	private requestNewFrame() {
-		this.frameId = requestAnimationFrame(this.frame.bind(this));
-	}
-
-	private autoStop() {
-		if (!this.running && !this._autoStopped) return;
-
-		this._autoStopped = this.running;
-		this.toggle();
+	private requestAnimationFrame() {
+		this._frame.id = requestAnimationFrame(this.frame.bind(this));
 	}
 }

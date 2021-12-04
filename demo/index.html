@@ -1,26 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Canvas Animator Demo</title>
-		<style>
-			* {
-				margin: 0;
-				padding: 0;
-			}
 
-			#canvas {
-				position: absolute;
-				height: 100vh;
-				width: 100vw;
-			}
-		</style>
-	</head>
-	<body>
-		<canvas id="canvas"></canvas>
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Canvas Animator Demo</title>
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+		}
 
-		<script src="./script.ts"></script>
-	</body>
+		main {
+			display: flex;
+			justify-content: space-around;
+			margin-top: 60px;
+		}
+
+		canvas {
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+
+<body>
+	<main>
+		<canvas id="canvas2d" width="400" height="560"></canvas>
+		<!-- <canvas id="canvaswebgl" width="400" height="560"></canvas> -->
+	</main>
+
+	<script type="module" src="./script.ts"></script>
+</body>
+
 </html>
